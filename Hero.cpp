@@ -103,21 +103,32 @@ Hero::~Hero()
 std::ostream& operator<<(std::ostream& os, const Hero& hero)
 {
     os <<  hero.getFirstName() << hero.getLastName() <<hero.getNickname() 
-        <<hero.getPurchasePrice()<< "$ with strenght:"<< hero.getStrength() 
-        <<" of type "<<hero.getPower() <<hero.getIsAttackMode()
-        <<hero.getIsPurchased()<< std::endl;
+        <<" of type "<<hero.getPower()
+        << " with strenght:"<< hero.getStrength()
+        << " and price "<<hero.getPurchasePrice()
+        << "$, is attack mode:" <<hero.getIsAttackMode()
+        <<" and purchased:" << hero.getIsPurchased() << std::endl;
   
     return os;
 }
 
 std::istream& operator>>(std::istream& is, Hero& hero)
 {
-    std::string firstName, lastName, nickname;
+    std::string firstName, lastName, nickname, powerStr;
     int purchasePrice, strength;
-    int powervalue;
-    bool isAttackMode, isPurchased;
 
-    is >> firstName >> lastName >> nickname >>powervalue >> strength >> purchasePrice >> isAttackMode >> isPurchased;
+    is >> firstName >> lastName >> nickname >> powerStr >> strength >> purchasePrice;
+
+    Power powervalue;
+    if (powerStr == "Fire")
+        powervalue = Fire;
+    else if (powerStr == "Water")
+        powervalue = Water;
+    else if (powerStr == "Earth")
+        powervalue = Earth;
+    else
+        throw std::invalid_argument
+        ("Invalid power string: " + powerStr);//!!
 
     hero.setFirstName(firstName);
     hero.setLastName(lastName);
@@ -125,8 +136,8 @@ std::istream& operator>>(std::istream& is, Hero& hero)
     hero.setPower(static_cast<Power>(powervalue));
     hero.setPurchasePrice(purchasePrice);
     hero.setStrength(strength);
-    hero.setIsAttackMode(isAttackMode);
-    hero.setIsPurchased(isPurchased);
+    hero.setIsAttackMode(0);
+    hero.setIsPurchased(0);
   
     return is;
 }

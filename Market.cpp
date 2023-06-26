@@ -3,7 +3,6 @@
 #include <vector>
 #include "Market.h"
 using namespace std;
-
 Market::Market() = default;
 
 int Market::getNumHeroes() const {
@@ -12,16 +11,18 @@ int Market::getNumHeroes() const {
 
 void Market::addHero(const Hero& hero) {
     heroes.push_back(hero);
+    std::cout << hero.getNickname() << " successfully added to the Market" << std::endl;
 }
 
 void Market::printMarket() const {
     int index = 1;
     for (const Hero& hero : heroes) {
-        std::cout << index << ". name: " << hero.getNickname()
+        std::cout << index << ".: " << hero << std::endl;
+        index++;
+        /*.getNickname()
             << " price: " << hero.getPurchasePrice()
             << "$ type: " << hero.getPower()
-            << " power: " << hero.getStrength() << std::endl;
-        index++;
+            << " power: " << hero.getStrength() */
     }
 }
 

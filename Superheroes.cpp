@@ -187,7 +187,7 @@ void showPlayersToAdmin(const std::vector<Player>& players)
     std::cout << "Players:" << std::endl;
     for (const Player& player : players)
     {
-        cout << i++;
+       std:: cout << i++;
         std::cout << player.getPlayerName() << " with email "  
             << player.getPlayerEmail() << ", username: " 
             << player.getPlayerUsername() << " and password " 
@@ -239,7 +239,6 @@ void sortByMoneyBalance(std::vector<Player>& players) {
         }
     }
 }
-
 bool isValidPassword(const string& password)
 {
     bool hasCapitalLetter = false;
@@ -264,40 +263,41 @@ bool isValidPassword(const string& password)
     return hasCapitalLetter && hasSmallLetter && hasNumber;
 }
 
+
 int main()
 {
-    std::cout << "enter sign in ";
     std::vector<Administrator> administrators;
     std::vector<Player> players;
     Market MainMarket;
-    int periodicMoney=200;
-    std::string fileName2 = "admins_data.txt";
-    std::ifstream file(fileName2);
+    int periodicMoney = 200;
+    std::string AdminsFileName = "admins_data.txt";
+    std::ifstream file(AdminsFileName);
     if (file && file.tellg() > 0) {
-        
-        loadAdministratorsFromFile(administrators, fileName2);
+
+        loadAdministratorsFromFile(administrators, AdminsFileName);
+        file.close();
     }
-    else{Administrator MainAdmin("Victor", "victor@abv.bg", "Victor16", "ParolataNaVictor123");
-    administrators.emplace_back(MainAdmin);}
-    
-
-
+    else {
+        Administrator MainAdmin("Victor", "victor@abv.bg", "Victor16", "ParolataNaVictor123");
+        administrators.emplace_back(MainAdmin);
+    }
     const Administrator* signedInAdmin = nullptr;
-
-    std::string fileName1 = "player_data.txt";
-    
+    std::string PlayersFileName = "player_data.txt";
     if (file && file.tellg() > 0) {
         // File is not empty, load data from file
-        loadPlayersFromFile(players, fileName1);
+        loadPlayersFromFile(players, PlayersFileName);
+        file.close();
     }
-    
+
     while (true) {
 
-        string usertype;
+        std::cout << "Choose to:" << std::endl
+            << "1. Sign in as admin" << std::endl
+            << "2. Sign in as player";
+        int usertype;
         std::cin >> usertype;
 
-        if (usertype == "sign in as admin")
-
+        if (usertype == 1)
         {
             std::string inputUsername;
             std::string inputPassword;
@@ -311,7 +311,7 @@ int main()
             for (const Administrator& admin : administrators) {
                 if (admin.signIn(inputUsername.c_str(), inputPassword.c_str())) {
                     signedInAdmin = &admin;
-                    std::cout << signedInAdmin->getAdministratorName() << ", you have successfully logged in as an administrator!" << std::endl;
+                    //  std::cout << signedInAdmin->getAdministratorName() << ", you have successfully logged in as an administrator!" << std::endl;
                     break;
                 }
             }
@@ -323,41 +323,46 @@ int main()
             }
 
             if (MainMarket.getNumHeroes() == 0) {
-                std::cout << "The market is empty, add three new heroes";
+                cout << "The market is empty, add three new heroes";
+                cout << "Hero one: (firstName, lastName, nickname, power, strength, purchasePrice)  ";
                 Hero hero1;
-                std::cin >> hero1;
+                cin >> hero1;
+                /*cout << "Hero two:";
                 Hero hero2;
-                std::cin >> hero2;
+                cin >> hero2;
+                cout << "Hero three:";
                 Hero hero3;
-                std::cin >> hero3;
+                cin >> hero3;*/
                 MainMarket.addHero(hero1);
-                MainMarket.addHero(hero2);
-                MainMarket.addHero(hero3);
+                /*MainMarket.addHero(hero2);
+                MainMarket.addHero(hero3);*/
+
             }
             while (true) {
                 string command;
                 std::cout << "Enter command: ";
-                std::cin >> command;
+                // std::cin.ignore();
+                std::getline(std::cin, command);
 
-                if (command == "log out") {
-                    std::cout << signedInAdmin->getAdministratorName() << ", you have successfully logged out." << std::endl;
+                if (command == "sign out") {
+                    std::cout << signedInAdmin->getAdministratorName() << ", you have successfully signed out." << std::endl;
                     signedInAdmin = nullptr;
                     break;
                 }
                 else if (command == "add admin") {
                     std::string name, email, username, password;
                     std::cout << "Enter name: ";
-                    std::cin >> name;
+                    std::getline(std::cin, name);
                     std::cout << "Enter email: ";
-                    std::cin >> email;
+                    std::getline(std::cin, email);
                     std::cout << "Enter username: ";
-                    std::cin >> username;
+                    std::getline(std::cin, username);
                     std::cout << "Enter password: ";
-                    std::cin >> password;
-                    if (!isValidPassword(password)) {
-                        cout << "invalid password";
-                        break;
-                    }
+                    std::getline(std::cin, password);
+                    /* if (!isValidPassword(password)) {
+                         cout << "invalid password";
+                         break;
+                     }*/
                     Administrator newAdmin(name.c_str(), email.c_str(), username.c_str(), password.c_str());
                     addAdmin(administrators, newAdmin);
 
@@ -365,18 +370,19 @@ int main()
                 else if (command == "add player")
                 {
                     std::string name, email, username, password;
+
                     std::cout << "Enter name: ";
-                    std::cin >> name;
+                    std::getline(std::cin, name);
                     std::cout << "Enter email: ";
-                    std::cin >> email;
+                    std::getline(std::cin, email);
                     std::cout << "Enter username: ";
-                    std::cin >> username;
+                    std::getline(std::cin, username);
                     std::cout << "Enter password: ";
-                    std::cin >> password;
-                    if (!isValidPassword(password)) {
+                    std::getline(std::cin, password);
+                    /*if (!isValidPassword(password)) {
                         cout << "invalid password";
                         break;
-                    }
+                    }*/
                     Player newPlayer(name.c_str(), email.c_str(), username.c_str(), password.c_str(), 200);
                     addPlayer(players, newPlayer);
 
@@ -386,12 +392,13 @@ int main()
                 {
                     std::string name, email, username, password;
                     std::cout << "Enter name: ";
-                    std::cin >> name;
+                    std::getline(std::cin, name);
                     std::cout << "Enter email: ";
-                    std::cin >> email;
+                    std::getline(std::cin, email);
                     std::cout << "Enter username: ";
-                    std::cin >> username;
+                    std::getline(std::cin, username);
                     std::cout << "Enter password: ";
+                    std::getline(std::cin, password);
                     Player newPlayer(name.c_str(), email.c_str(), username.c_str(), password.c_str(), 200);
                     deletePlayer(players, newPlayer);
 
@@ -404,7 +411,6 @@ int main()
 
                     MainMarket.addHero(newHero);
 
-                    std::cout << "Hero added to the market.\n";
                 }
                 else if (command == "show players") {
                     showPlayersToAdmin(players);
@@ -413,17 +419,15 @@ int main()
                     showAdmins(administrators);
                 }
                 else {
-                    std::cout << "invalid command";
+                    std::cout << "Invalid command. Enter valid one:" << std::endl;
                 }
             }
 
         }
 
-
-        else if (usertype == "sign in as player")
+        //user Player:
+        else if (usertype == 2)
         {
-
-
             Player* signedInPlayer = nullptr;
             std::string inputUsername;
             std::string inputPassword;
@@ -437,7 +441,7 @@ int main()
             for (Player& player : players) {
                 if (player.signIn(inputUsername.c_str(), inputPassword.c_str())) {
                     signedInPlayer = &player;
-                    std::cout << signedInPlayer->getPlayerName() << ", you have successfully logged in as a player!" << std::endl;
+                    // std::cout << signedInPlayer->getPlayerName() << ", you have successfully logged in as a player!" << std::endl;
                     break;
                 }
             }
@@ -452,7 +456,7 @@ int main()
 
             bool isHighestLogsCounter = true;
             for (const Player& player : players) {
-                if (player.getLogsCounter() >=signedInPlayer->getLogsCounter()) {
+                if (player.getLogsCounter() >= signedInPlayer->getLogsCounter()) {
                     isHighestLogsCounter = false;
                     break;
                 }
@@ -463,111 +467,137 @@ int main()
                     player.setMoneyBalance(currentBalance + periodicMoney);
                 }
             }
-            
+
             //commands of a player:
             string command;
-            size_t counter = 0;
+            int counter = 0;
             bool logedout = 0;
-            while (logedout==0) {
+
+            while (logedout == 0)
+            {
                 cout << "Enter command:";
-                cin >> command;
+               // std::cin.ignore();
+                std::getline(std::cin, command);
+
+
+                if (command == "sign out") {
+                    std::cout << signedInPlayer->getPlayerName() << ", you have successfully signed out." << std::endl;
+
+                    savePlayersToFile(players, PlayersFileName);
+                    saveAdministratorsToFile(administrators, AdminsFileName);
+
+                    // counter = 3;
+                    logedout = 1;
+                 //   continue;
+                    //break;
+
+
+                }
+
+                /* if (counter>2) {
+                     std::cout << "Invalid command. Enter valid one:" << std::endl;
+                     break;}*/
+
                 if (counter >= 3) {
-                    std::cout << "Limit of commands reached. You need to log out";
+                    std::cout << "limit reached. sign out";
+                    continue;
+
                 }
-                while (true) {
-                    if (command == "log out") {
-                        
-                        savePlayersToFile(players, fileName1);
-                        saveAdministratorsToFile(administrators, fileName2);
-                        break;
-                        counter = 3;
-                        logedout = 1;
+                if (command == "show market")
+                {
+                    MainMarket.printMarket();
+                    counter++;
+                    // continue;
+                     //break;
+                }
+                else if (command == "buy hero")
+                {
+                    signedInPlayer->buyHero(MainMarket);
+                    counter++;
+                    //continue;
+                    //break;
+                }
+                else if (command == "delete profile")
+                {
 
-                        break;
-                        
-                    }
-                    if (command == "show market")
-                    {
-                        MainMarket.printMarket();
-                        counter++;
-                        break;
-                    }
-                    else if (command == "buy hero")
-                    {
-                        signedInPlayer->buyHero(MainMarket);
-                        counter++;
-                        break;
-                    }
-                    else if (command == "delete profile")
-                    {
+                    deletePlayer(players, *signedInPlayer);
+                    counter = 3;
+                    //  continue;
+                      //break;
+                }
+                else if (command == "show balance")
+                {
 
-                        deletePlayer(players, *signedInPlayer);
-                        counter = 3;
-                        break;
-                    }
-                    else if (command == "show balance")
-                    {
+                    cout << signedInPlayer->getMoneyBalance();
+                    counter++;
+                    //continue;
+                    //break;
+                }
+                else if (command == "set to attack")
+                {
+                    string heronickname;
+                    cout << "enter nicnkame of the superhero";
+                    cin >> heronickname;
+                    signedInPlayer->setHeroAttackMode(heronickname);
+                    counter++;
+                    // continue;
+                     //break;
+                }
+                else if (command == "set to defense")
+                {
+                    string heronickname;
+                    cout << "enter nicnkame of the superhero";
+                    cin >> heronickname;
+                    signedInPlayer->setHeroDefenseMode(heronickname);
+                    counter++;
+                    //continue;
+                    //break;
+                }
+                else if (command == "attack player")
+                {
 
-                        cout << signedInPlayer->getMoneyBalance();
-                        counter++;
-                        break;
-                    }
-                    else if (command == "set to atttack") 
-                    {
-                        string heronickname;
-                        cout << "enter nicnkame of the superhero";
-                        cin >> heronickname;
-                        signedInPlayer->setHeroAttackMode(heronickname);
-                        counter++;
-                        break;
-                    }
-                    else if (command == "set to defense")
-                    {
-                        string heronickname;
-                        cout << "enter nicnkame of the superhero";
-                        cin >> heronickname;
-                        signedInPlayer->setHeroDefenseMode(heronickname);
-                        counter++;
-                        break;
-                    }
-                    else if (command == "attack player") 
-                    {
+                    Player* opponentPlayer = nullptr;
+                    std::string opponentUsername;
+                    cout << "Enter the username of the player you want to attack";
+                    cin >> opponentUsername;
+                    for (Player& player : players) {
 
-                        Player* opponentPlayer = nullptr;
-                        std::string opponentUsername;
-                        cout << "Enter the username of the player you want to attack";
-                        cin >> opponentUsername;
-                        for (Player& player : players) {
-
-                            if (player.getUsername() == opponentUsername)
-                            {
-                                opponentPlayer = &player;
-                                break;
-                            }
-                        }
-                        if (opponentPlayer == nullptr)
+                        if (player.getUsername() == opponentUsername)
                         {
-                            cout << "Player not found." << endl;
-                            continue;  
+                            opponentPlayer = &player;
+                            break;
                         }
-
-                        signedInPlayer->attackAnotherPlayer(*opponentPlayer);
-
-                        counter++;
-                        break;
                     }
-                    else if (command == "show players")
+                    if (opponentPlayer == nullptr)
                     {
-                        showPlayers(players);
-                        counter++;
-                        break;
+                        cout << "Player not found." << endl;
+                        continue;
                     }
-                    else if (command == "show leadboard") {
-                        sortByMoneyBalance(players);
-                        printPlayers(players);
-                    }
+
+                    signedInPlayer->attackAnotherPlayer(*opponentPlayer);
+
+                    counter++;
+                    // break;
                 }
-               
+                else if (command == "show players")
+                {
+                    showPlayers(players);
+                    counter++;
+                    // continue;
+                     //break;
+                }
+                else if (command == "show leadboard") {
+                    sortByMoneyBalance(players);
+                    printPlayers(players);
+                    // break;
+                }
+                else {
+                    std::cout << "Invalid command. Enter valid one:" << std::endl;
+                    // continue;
+                     //break;
+                }
+
+
             }
         }
     }

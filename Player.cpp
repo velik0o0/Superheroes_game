@@ -3,7 +3,8 @@
 #include "Hero.h"
 #include <iostream>
 using namespace std;
- 
+#include <stdlib.h>
+
 Player::Player(const char* name, const char* email, const char* username, const char* password, double moneyBalance)
     : User(name, email, username, password), moneyBalance(moneyBalance), heroes(), LogsCounter(0)
 {
@@ -17,6 +18,7 @@ bool Player::signIn(const char* inputUsername, const char* inputPassword) const
 
     if (getUsername() == username && getPassword() == password) {
         std::cout << getName() << ", you have successfully logged in as a player!" << std::endl;
+        std::cin.ignore();
         return true;
     }
     return false;
@@ -48,7 +50,7 @@ void Player::addHero(const Hero& hero)
 void Player::buyHero(Market& market)
 {
     int choice;
-    cout << "Enter the number of the hero you want to buy: ";
+    cout << "Enter the index of the hero you want to buy: ";
     cin >> choice;
 
     // Add the selected hero to the player's collection
@@ -56,29 +58,32 @@ void Player::buyHero(Market& market)
     if (choice >= 1 && choice <= heroes.size())
     {
         const Hero& hero = heroes[choice - 1];
-        if (hero.getIsPurchased())
+       /*if (hero.getIsPurchased())
         {
             cout << "Hero is already purchased." << endl;
-        }
-        else
-        {
+        }else
+        {*/ 
+        
             double price = hero.getPurchasePrice();
             if (moneyBalance >= price)
             {
                 moneyBalance -= price;
                 addHero(hero);
                 cout << "Hero purchased successfully!" << endl;
+                market.removeHero(hero.getNickname());
             }
             else
             {
                 cout << "Not enough money to purchase the hero." << endl;
             }
-        }
+        //}
     }
     else
     {
         cout << "Invalid choice." << endl;
     }
+
+
 }
 
 void Player::setHeroAttackMode(const std::string& heroNickname)
@@ -121,7 +126,6 @@ void Player::setHeroDefenseMode(const std::string& heroNickname)
     } 
 }
 
-
 const char* Player::getPlayerName() const
 {
     return getName();
@@ -132,7 +136,6 @@ const char* Player::getPlayerUsername() const {
 const char* Player::getPlayerPassword() const {
     return getPassword();
 }
-
 const char* Player::getPlayerEmail() const
 {
     return getEmail();
@@ -175,7 +178,14 @@ const std::vector<Hero>& Player::getHeroes() const {
 void Player::attackAnotherPlayer(Player& opponent)
 {
     int attackingHeroIndex;
-    std::cout << "Choose the index of the hero you want to use for the attack: ";
+    std::cout << "your heroes:" << std::endl;
+    int index = 1;
+    for (const Hero& hero : heroes)
+    {               
+       cout << index++ << ". " << hero;
+           
+    }
+    std::cout << "Choose the index of your hero you want to use for the attack: "<<std::endl;
     std::cin >> attackingHeroIndex;
 
     if (attackingHeroIndex < 1 || attackingHeroIndex > heroes.size())
@@ -188,7 +198,7 @@ void Player::attackAnotherPlayer(Player& opponent)
     if (opponent.heroes.empty())
     {
         std::cout << "Opponent has no heroes. You win!";
-        setMoneyBalance(getMoneyBalance() + 10);  
+        setMoneyBalance(getMoneyBalance() + 50);  //50 can be replaced
         opponent.setMoneyBalance(opponent.getMoneyBalance() - attackingHero.getStrength());
         return;
     }
@@ -196,85 +206,116 @@ void Player::attackAnotherPlayer(Player& opponent)
     else {
 
         int attackedHeroIndex;
-        std::cout << "Choose the index of the opponent's hero to be attacked: ";
-        std::cin >> attackedHeroIndex;
 
-        if (attackedHeroIndex < 1 || attackedHeroIndex > opponent.getHeroesCount())
-        {
-            cout << "Invalid hero index." << endl;
-            return;
+        int methodOfAttack;
+        std::cout << "You can choose to:\n"
+            << "1. Attack particular hero of your opponent\n"
+            << "2. Attack random hero of your opponent" << std::endl;
+        std::cin >> methodOfAttack;
+
+        if (methodOfAttack == 2) {
+            
+                srand(time(0));
+                attackedHeroIndex = (rand() % opponent.getHeroesCount())+1;
+            
         }
-        Hero& attackedHero = opponent.heroes[attackedHeroIndex - 1];
-
-
-        if (attackingHero.getPower() != attackedHero.getPower())
-        {
-            if ((attackingHero.getPower() == Power::Fire && attackedHero.getPower() == Power::Earth)
-                || (attackingHero.getPower() == Power::Earth && attackedHero.getPower() == Power::Water)
-                || (attackingHero.getPower() == Power::Water && attackedHero.getPower() == Power::Fire))
+        
+       if (methodOfAttack == 1)
+       {
+            std::cout << "Choose the index of the opponent's hero to be attacked: " << std::endl;
+            int index = 1;
+            for (const Hero& hero : opponent.getHeroes())
             {
-                attackingHero.setStrength(attackingHero.getStrength() * 2);
-            }
-            else   attackedHero.setStrength(attackedHero.getStrength() * 2);
-
-
-        }
-
-
-        if (attackingHero.getPower() == attackedHero.getPower()
-            && attackedHero.getIsAttackMode() == true)
-        {
-            if (attackingHero.getStrength() > attackedHero.getStrength())
-            {
-                double diff = attackingHero.getStrength() - attackedHero.getStrength();
-                std::cout << "Attack successful! You defeated the opponent's hero." << endl;
-                setMoneyBalance(getMoneyBalance() + diff);
-                opponent.setMoneyBalance(opponent.getMoneyBalance() - +diff);
-
-                opponent.removeHero(attackedHero.getNickname());
-            }
-            else if (attackingHero.getStrength() < attackedHero.getStrength())
-            {
-                double diff = attackedHero.getStrength() - attackingHero.getStrength();
-                std::cout << "Attack successful! You defeated the opponent's hero." << endl;
-                setMoneyBalance(getMoneyBalance() - 2 * diff);
-                opponent.setMoneyBalance(opponent.getMoneyBalance() + 10);//10 can be replaced
-
-                 opponent.removeHero(attackedHero.getNickname());
-            }
-            else
-            {
-                std::cout << "Attack failed! Both heroes have the same strength." << endl;
-                setMoneyBalance(getMoneyBalance() - 20);//20 can be replaced
+              
+                cout << index++ << ". " << hero.getNickname() << std::endl;
 
             }
-        }
+            std::cin >> attackedHeroIndex;
 
-        if (attackingHero.getPower() == attackedHero.getPower()
-            && attackedHero.getIsAttackMode() == false)
-        {
-            if (attackingHero.getStrength() > attackedHero.getStrength())
+            if (attackedHeroIndex < 1 || attackedHeroIndex > opponent.getHeroesCount())
             {
-                double diff = attackingHero.getStrength() - attackedHero.getStrength();
-                std::cout << "Attack successful! You defeated the opponent's hero." << endl;
-                setMoneyBalance(getMoneyBalance() + diff);
-
-                opponent.removeHero(attackedHero.getNickname());
+                cout << "Invalid hero index." << endl;
+                return;
             }
-            else if (attackingHero.getStrength() < attackedHero.getStrength())
-            {
-                double diff = attackedHero.getStrength() - attackingHero.getStrength();
-                std::cout << "Attack successful! You defeated the opponent's hero." << endl;
-                setMoneyBalance(getMoneyBalance() - 2 * diff);
+            Hero& attackedHero = opponent.heroes[attackedHeroIndex - 1];
 
-                opponent.removeHero(attackedHero.getNickname());
-            }
-            else
+            cout << attackingHero.getPower() << " " << attackedHero.getPower() << endl;
+            //tipovete sili ne suvpadat => promenq se seialta
+            if (attackingHero.getPower() != attackedHero.getPower())
             {
-                std::cout << "Attack failed! Both heroes have the same strength." << endl;
-                setMoneyBalance(getMoneyBalance() - 20);//20 can be replaced
+                if ((attackingHero.getPower() == Power::Fire && attackedHero.getPower() == Power::Earth)
+                    || (attackingHero.getPower() == Power::Earth && attackedHero.getPower() == Power::Water)
+                    || (attackingHero.getPower() == Power::Water && attackedHero.getPower() == Power::Fire))
+                {
+                    attackingHero.setStrength(attackingHero.getStrength() * 2);
+                }
+                else   attackedHero.setStrength(attackedHero.getStrength() * 2);
+
 
             }
+
+            //tipovete sili suvpadat ili ne suvpadat i veche e promenena silata 
+            //&& opponent - attack mode
+            if (attackedHero.getIsAttackMode() == true)
+            {
+                if (attackingHero.getStrength() > attackedHero.getStrength())
+                {
+                    int diff = attackingHero.getStrength() - attackedHero.getStrength();
+                    std::cout << "Attack successful! You defeated the opponent's hero." << endl;
+                    setMoneyBalance(getMoneyBalance() + diff);
+                    opponent.setMoneyBalance(opponent.getMoneyBalance() - diff);
+
+                    opponent.removeHero(attackedHero.getNickname());
+                }
+
+                else if (attackingHero.getStrength() < attackedHero.getStrength())
+                {
+                    int diff = attackedHero.getStrength() - attackingHero.getStrength();
+                    std::cout << "Attack unsuccessful! Your opponent defeated you!" << endl;
+                    setMoneyBalance(getMoneyBalance() - 2 * diff);
+                    opponent.setMoneyBalance(opponent.getMoneyBalance() + 50);//50 can be replaced
+
+                    opponent.removeHero(attackedHero.getNickname());
+                }
+                else
+                {
+                    std::cout << "Attack failed! Both heroes have the same strength." << endl;
+                    setMoneyBalance(getMoneyBalance() - 80);//80 can be replaced
+
+                }
+            }
+            //tipovete sili suvpadat ili ne suvpadat i veche e promenena silata 
+            //&& opponent -defense mode
+            if (attackedHero.getIsAttackMode() == false)
+            {
+                if (attackingHero.getStrength() > attackedHero.getStrength())
+                {
+                    int diff = attackingHero.getStrength() - attackedHero.getStrength();
+                    std::cout << "Attack successful! You defeated the opponent's hero." << endl;
+                    setMoneyBalance(getMoneyBalance() + diff);
+
+                    opponent.removeHero(attackedHero.getNickname());
+                }
+                else if (attackingHero.getStrength() < attackedHero.getStrength())
+                {
+                    int diff = attackedHero.getStrength() - attackingHero.getStrength();
+                    std::cout << "Attack unsuccessful! Your opponent defeated you!" << endl;
+                    setMoneyBalance(getMoneyBalance() - 2 * diff);
+
+                    opponent.removeHero(attackedHero.getNickname());
+                }
+                else
+                {
+                    std::cout << "Attack failed! Both heroes have the same strength." << endl;
+                    setMoneyBalance(getMoneyBalance() - 80);//80 can be replaced
+
+                }
+            }
+            
+       }
+       else
+       {
+                std::cout << "invalid index\n";
         }
 
     

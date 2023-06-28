@@ -18,6 +18,7 @@ bool Administrator::signIn(const char* inputUsername, const char* inputPassword)
 
     if (getUsername() == username && getPassword() == password) {
         std::cout << getName() << ", you have successfully logged in as administrator!" << std::endl;
+        std::cin.ignore();//!!!
         return true;
     }
     return false;

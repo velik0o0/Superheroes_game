@@ -16,12 +16,12 @@ private:
     int strength;
     double purchasePrice;
     bool isAttackMode;
-    bool isPurchased;
+   // bool isPurchased;
 
 public:
     Hero() = default;
     Hero(const std::string& firstName, const std::string& lastName, const std::string& nickname,
-        Power power, int strength, double purchasePrice, bool isAttackMode, bool isPurchased);
+        Power power, int strength, double purchasePrice, bool isAttackMode /*,bool isPurchased*/);
 
     friend std::ostream& operator<<(std::ostream& os, const Hero& hero);
     friend std::istream& operator>>(std::istream& is, Hero& hero);
@@ -33,7 +33,10 @@ public:
     int getStrength() const;
     double getPurchasePrice() const;
     bool getIsAttackMode() const;
-    bool getIsPurchased() const;
+  //  bool getIsPurchased() const;
+    
+    std::string getPowerAsString() const;
+
 
     void setFirstName(const std::string& firstName);
     void setLastName(const std::string& lastName);
@@ -42,6 +45,6 @@ public:
     void setStrength(int strength);
     void setPurchasePrice(double purchasePrice);
     void setIsAttackMode(bool isAttackMode);
-    void setIsPurchased(bool isPurchased);
+    //void setIsPurchased(bool isPurchased);
     ~Hero();
 };

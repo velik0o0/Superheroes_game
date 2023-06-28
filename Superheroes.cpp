@@ -408,10 +408,10 @@ int main()
 
                     std::cout << "Enter password: ";
                     std::getline(std::cin, password);
-                    /* if (!isValidPassword(password)) {
+                    if (!isValidPassword(password)) {
                          cout << "invalid password";
                          break;
-                     }*/
+                     }
                     Administrator newAdmin(name.c_str(), email.c_str(), username.c_str(), password.c_str());
                     addAdmin(administrators, newAdmin);
 
@@ -435,10 +435,10 @@ int main()
 
                     std::cout << "Enter password: ";
                     std::getline(std::cin, password);
-                    /*if (!isValidPassword(password)) {
+                    if (!isValidPassword(password)) {
                         cout << "invalid password";
                         break;
-                    }*/
+                    }
                     Player newPlayer(name.c_str(), email.c_str(), username.c_str(), password.c_str(), 200);
                     addPlayer(players, newPlayer);
 

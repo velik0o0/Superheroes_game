@@ -60,7 +60,7 @@ void loadPlayersFromFile(std::vector<Player>& players, const std::string& fileNa
                 file >> moneyBalance;
 
                 std::string heroesHeader;
-                std::getline(file, heroesHeader); // Read the "Heroes:" header
+                std::getline(file, heroesHeader); // "Heroes:" header
 
                 std::string heroName;
                 while (std::getline(file, heroName) && !heroName.empty()) {
@@ -72,7 +72,7 @@ void loadPlayersFromFile(std::vector<Player>& players, const std::string& fileNa
                 file >> logsCounter;
 
                 std::string divider;
-                std::getline(file, divider); // Read the "--------------------------" divider
+                std::getline(file, divider); 
 
                 Player player(name.c_str(), email.c_str(), username.c_str(), password.c_str(), moneyBalance);
                 player.setLogsCounter(logsCounter);
@@ -140,15 +140,16 @@ void loadAdministratorsFromFile(std::vector<Administrator>& administrators, cons
 void addAdmin(std::vector<Administrator>& administrators, const Administrator& newAdministrator)
 {
     administrators.push_back(newAdministrator);
-    std::cout << "New administrator added.\n";
+    std::cout << "New administrator "<<newAdministrator.getName()<<" added.\n";
 }
-void addPlayer(std::vector<Player>& players, const Player& newAdministrator)
+void addPlayer(std::vector<Player>& players, const Player& newPlayer)
 {
-    players.push_back(newAdministrator);
-    std::cout << "New player added.\n";
+    players.push_back(newPlayer);
+    std::cout << "New player "<<newPlayer.getName()<<" added.\n";
 }
 void deletePlayer(std::vector<Player>& players, const std::string& username)
 {
+    //ot internet
     auto it = std::find_if(players.begin(), players.end(), [&username](const Player& player) {
         return player.getUsername() == username;
         });
@@ -211,10 +212,7 @@ void showPlayersToAdmin(const std::vector<Player>& players)
             {
                 std::cout << " has heroes:" << std::endl;
                 cout << hero;
-                /*std::cout << i << "." << j++ << ": " << hero.getNickname() << " "
-                    << hero.getFirstName() << " " << hero.getLastName()
-                    << hero.getPower() << " " << hero.getStrength() <<" with attack mode:"
-                    << hero.getIsAttackMode()  << std::endl;*/
+               
             }
         }
         std::cout << "-----------------------" << std::endl;
@@ -226,8 +224,7 @@ void showAdmins(const std::vector<Administrator>& administrators)
     std::cout << "Admins:" << std::endl;
     for (const Administrator& admin: administrators)
     {
-        cout << i++;
-        std::cout << " "<<admin.getAdministratorName() << " with email: "
+        cout << i++ << " "<<admin.getAdministratorName() << " with email: "
             << admin.getAdministratorEmail() << std::endl;
 
     }
@@ -238,9 +235,6 @@ void printPlayers(const std::vector<Player>& players) {
         std::cout <<place++<< " player: " << player.getName() << ", money balance: " << player.getMoneyBalance() << std::endl;
     }
 }
-/*bool compareByMoneyBalance(const Player& player1, const Player& player2) {
-    return player1.getMoneyBalance() > player2.getMoneyBalance();
-}*/
 
 void sortByMoneyBalance(std::vector<Player>& players) {
     for (size_t i = 0; i < players.size() - 1; ++i) {
@@ -256,16 +250,6 @@ void sortByMoneyBalance(std::vector<Player>& players) {
 
     }
 }
-/*void sortByMoneyBalance(std::vector<Player>& players) {
-    for (size_t i = 0; i < players.size() - 1; ++i) {
-        for (size_t j = 0; j < players.size() - i - 1; ++j) {
-            if (compareByMoneyBalance(players[j], players[j + 1])) {
-                std::swap(players[j], players[j + 1]);
-            }
-        }
-    }
-}*/
-
 bool isValidPassword(const string& password)
 {
     bool hasCapitalLetter = false;
@@ -281,12 +265,10 @@ bool isValidPassword(const string& password)
         else if (c >= '0' && c <= '9')
             hasNumber = true;
 
-        // If all requirements are met, exit the loop early
         if (hasCapitalLetter && hasSmallLetter && hasNumber)
             break;
     }
 
-    // Check if all requirements are met
     return hasCapitalLetter && hasSmallLetter && hasNumber;
 }
 
@@ -345,7 +327,6 @@ int main()
             for (const Administrator& admin : administrators) {
                 if (admin.signIn(inputUsername.c_str(), inputPassword.c_str())) {
                     signedInAdmin = &admin;
-                    //  std::cout << signedInAdmin->getAdministratorName() << ", you have successfully logged in as an administrator!" << std::endl;
                     break;
                 }
             }
@@ -383,13 +364,10 @@ int main()
             while (true) {
                 string command;
                 std::cout << "Enter command: "<<std::endl;
-               //std::cin.ignore();
                 std::getline(std::cin, command);
 
                 if (command == "sign out") {
-                    //signedInAdmin = nullptr;
-                    //std::cout << signedInAdmin->getAdministratorName() << ", you have successfully signed out." << std::endl;
-                    break;
+                  break;
                 }
                 else if (command == "add admin") {
                     std::string name, email, username, password;
@@ -408,7 +386,7 @@ int main()
 
                     std::cout << "Enter password: ";
                     std::getline(std::cin, password);
-                    if (!isValidPassword(password)) {
+                     if (!isValidPassword(password)) {
                          cout << "invalid password";
                          break;
                      }
@@ -439,7 +417,7 @@ int main()
                         cout << "invalid password";
                         break;
                     }
-                    Player newPlayer(name.c_str(), email.c_str(), username.c_str(), password.c_str(), 200);
+                    Player newPlayer(name.c_str(), email.c_str(), username.c_str(), password.c_str(), 0);
                     addPlayer(players, newPlayer);
 
 
@@ -476,7 +454,7 @@ int main()
                         cout << "Enter the number of the hero you want to add: ";
                         cin >> choice;
 
-                        // Add the selected hero to the player's collection
+                        
                         const vector<Hero>& heroes = ArchivedMarket.getHeroes();
                         if (choice >= 1 && choice <= heroes.size())
                         {
@@ -524,21 +502,19 @@ int main()
             for (Player& player : players) {
                 if (player.signIn(inputUsername.c_str(), inputPassword.c_str())) {
                     signedInPlayer = &player;
-                    // std::cout << signedInPlayer->getPlayerName() << ", you have successfully logged in as a player!" << std::endl;
                     break;
                 }
             }
 
             if (signedInPlayer == nullptr) {
                 std::cout << "Invalid username or password. Please try again." << std::endl;
-                // Handle unsuccessful sign-in
+                // handle error
                 continue;
             }
 
-           
-
             signedInPlayer->setLogsCounter(signedInPlayer->getLogsCounter() + 1);
            // cout << "logs counter: "<<signedInPlayer->getLogsCounter()<<std::endl;
+
             bool isHighestLogsCounter = true;
             for (const Player& player : players) {
                 if (player.getLogsCounter() >= signedInPlayer->getLogsCounter()
@@ -553,6 +529,7 @@ int main()
                     player.setMoneyBalance(currentBalance + periodicMoney);
                 }
             }
+
             //commands of a player:
             string command;
             int counter = 0;
@@ -562,10 +539,7 @@ int main()
             {
                 if (counter <3) {
                     cout << "Enter command:" << std::endl;
-                    // std::cin.ignore();
-                    
-                    
-                    
+                                      
                 }
                 if (counter >= 3&&logedout==0) {
                     std::cout << "limit reached. You need to sign out!"
@@ -581,17 +555,11 @@ int main()
                     savePlayersToFile(players, PlayersFileName);
                     saveAdministratorsToFile(administrators, AdminsFileName);
 
-                    // counter = 3;
                     logedout = 1;
-                    continue;//!
-                    //break;
-
+                    continue;//!!
+                    
 
                 }
-
-                /* if (counter>2) {
-                     std::cout << "Invalid command. Enter valid one:" << std::endl;
-                     break;}*/
 
                 if (counter<3){
                        if (command == "show market")
@@ -607,8 +575,6 @@ int main()
                         std::cin.ignore();
                         counter++;
 
-                        //continue;
-                        //break;
                     }
                     else if (command == "delete profile")
                     {
@@ -670,24 +636,22 @@ int main()
                         signedInPlayer->attackAnotherPlayer(*opponentPlayer);
 
                         counter++;
-                        // break;
+                       
                     }
                     else if (command == "show players")
                     {
                         showPlayers(players);
                         counter++;
-                        // continue;
-                         //break;
+                        
                     }
                     else if (command == "show leadboard") {
                         sortByMoneyBalance(players);
                         printPlayers(players);
-                        // break;
+                      
                     }
                     else {
                         std::cout << "Invalid command. Try another one!" << std::endl;
-                        // continue;
-                         //break;
+                       
                     }
                 }
 

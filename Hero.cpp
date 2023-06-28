@@ -3,16 +3,17 @@
 using namespace std;
 #include <iostream>
 #include <fstream>
+
+
 Hero::Hero(const std::string& firstName, const std::string& lastName, const std::string& nickname,
-    Power power, int strength, double purchasePrice, bool isAttackMode, bool isPurchased)
+    Power power, int strength, double purchasePrice, bool isAttackMode/*,bool isPurchased*/ )
     : firstName(firstName),
     lastName(lastName),
     nickname(nickname),
     power(power),
     strength(strength),
     purchasePrice(purchasePrice),
-    isAttackMode(false),
-    isPurchased(false) {}
+    isAttackMode(false) {}
 
 const std::string& Hero::getFirstName() const
 {
@@ -31,7 +32,21 @@ const std::string& Hero::getNickname() const
 
 Power Hero::getPower() const
 {
-    return power;
+    return  power;
+}
+std::string Hero::getPowerAsString() const
+{
+    switch (power)
+    {
+    case Fire:
+        return "Fire";
+    case Water:
+        return "Water";
+    case Earth:
+        return "Earth";
+    default:
+        return "Unknown";
+    }
 }
 
 int Hero::getStrength() const
@@ -49,10 +64,10 @@ bool Hero::getIsAttackMode() const
     return isAttackMode;
 }
 
-bool Hero::getIsPurchased() const
+/*bool Hero::getIsPurchased() const
 {
     return isPurchased;
-}
+}*/
 
 void Hero::setFirstName(const std::string& firstName)
 {
@@ -88,11 +103,11 @@ void Hero::setIsAttackMode(bool isAttackMode)
 {
     this->isAttackMode = isAttackMode;
 }
-
-void Hero::setIsPurchased(bool isPurchased)
+/*void Hero::setIsPurchased(bool isPurchased)
 {
     this->isPurchased = isPurchased;
-}
+}*/
+
 
 Hero::~Hero()
 {
@@ -102,12 +117,13 @@ Hero::~Hero()
 
 std::ostream& operator<<(std::ostream& os, const Hero& hero)
 {
-    os <<  hero.getFirstName() << hero.getLastName() <<hero.getNickname() 
-        <<" of type "<<hero.getPower()
-        << " with strenght:"<< hero.getStrength()
-        << " and price "<<hero.getPurchasePrice()
-        << "$, is attack mode:" <<hero.getIsAttackMode()
-        <<" and purchased:" << hero.getIsPurchased() << std::endl;
+    os <<  hero.getFirstName() <<" "<< hero.getLastName() << " " << hero.getNickname()
+        <<" of type "
+        <<hero.getPowerAsString()
+        << " has strenght:"<< hero.getStrength()
+        << ", price: "<<hero.getPurchasePrice()
+        << "$ and is attack mode:" <<hero.getIsAttackMode()
+       /* << " and purchased:" << hero.getIsPurchased()*/ << std::endl;
   
     return os;
 }
@@ -117,7 +133,7 @@ std::istream& operator>>(std::istream& is, Hero& hero)
     std::string firstName, lastName, nickname, powerStr;
     int purchasePrice, strength;
 
-    is >> firstName >> lastName >> nickname >> powerStr >> strength >> purchasePrice;
+    is >> firstName >> lastName >> nickname >> powerStr >> strength  >>purchasePrice;
 
     Power powervalue;
     if (powerStr == "Fire")
@@ -137,7 +153,7 @@ std::istream& operator>>(std::istream& is, Hero& hero)
     hero.setPurchasePrice(purchasePrice);
     hero.setStrength(strength);
     hero.setIsAttackMode(0);
-    hero.setIsPurchased(0);
+  //  hero.setIsPurchased(0);
   
     return is;
 }

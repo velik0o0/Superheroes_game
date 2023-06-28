@@ -535,11 +535,14 @@ int main()
                 continue;
             }
 
-            signedInPlayer->setLogsCounter(signedInPlayer->getLogsCounter() + 1);
+           
 
+            signedInPlayer->setLogsCounter(signedInPlayer->getLogsCounter() + 1);
+           // cout << "logs counter: "<<signedInPlayer->getLogsCounter()<<std::endl;
             bool isHighestLogsCounter = true;
             for (const Player& player : players) {
-                if (player.getLogsCounter() >= signedInPlayer->getLogsCounter()) {
+                if (player.getLogsCounter() >= signedInPlayer->getLogsCounter()
+                    && player.getPlayerUsername()!=signedInPlayer->getPlayerUsername()) {
                     isHighestLogsCounter = false;
                     break;
                 }
@@ -550,7 +553,6 @@ int main()
                     player.setMoneyBalance(currentBalance + periodicMoney);
                 }
             }
-
             //commands of a player:
             string command;
             int counter = 0;
